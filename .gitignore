@@ -1,0 +1,44 @@
+# Node.js
+node_modules/
+dist/
+
+# 环境变量
+.env
+.env.*
+!.env.example
+*.env.bak
+
+# SQLite 数据文件
+*.db
+*.db-journal
+prisma/*.db*
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 日志
+*.log
+log/
+
+# 临时文件
+temp/
+.cron.lock
+
+# IDE
+.idea/
+.vscode/
+
+# 系统文件
+.DS_Store
+
+# 临时计划文件
+docs/plans/
+
+# 归档/临时
+*.zip
+verify-*.png
+
+# OMC 临时状态
+.omc/state/
+.omc/project-memory.json

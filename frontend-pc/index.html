@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GouYe</title>
+    <link rel="icon" href="assets/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 登录页 -->
+    <div id="login-page" class="hidden min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-sm">
+            <h1 class="text-2xl font-bold text-center mb-6">GouYe</h1>
+            <form id="login-form" class="space-y-4">
+                <input type="text" id="login-username" placeholder="用户名"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="login-password" placeholder="密码"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit"
+                    class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    登录
+                </button>
+                <p id="login-error" class="text-red-500 text-sm text-center hidden"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- 主布局 -->
+    <div id="app-layout" class="hidden">
+        <!-- 移动端顶栏 -->
+        <header class="lg:hidden fixed top-0 left-0 right-0 bg-white shadow-sm z-30 flex items-center h-14 px-4">
+            <button id="menu-toggle" class="text-gray-600 text-xl">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span id="mobile-title" class="ml-4 font-semibold text-lg">需求</span>
+        </header>
+
+        <!-- 侧边栏遮罩 -->
+        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/30 z-40 lg:hidden"></div>
+
+        <!-- 侧边栏 -->
+        <aside id="sidebar"
+            class="fixed top-0 left-0 h-full w-56 bg-white shadow-lg z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-200">
+            <div class="p-6 border-b">
+                <h1 class="text-xl font-bold">GouYe</h1>
+            </div>
+            <nav class="py-4 flex flex-col h-[calc(100%-5rem)]">
+                <div class="flex-1 space-y-1 px-3">
+                    <a href="#/requirements" class="nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" data-page="requirements">
+                        <i class="fas fa-clipboard-list w-5 text-center mr-3"></i>需求
+                    </a>
+                    <a href="#/todos" class="nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" data-page="todos">
+                        <i class="fas fa-check-square w-5 text-center mr-3"></i>TODO
+                    </a>
+                    <a href="#/transactions" class="nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" data-page="transactions">
+                        <i class="fas fa-wallet w-5 text-center mr-3"></i>记账
+                    </a>
+                    <a href="#/checkins" class="nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" data-page="checkins">
+                        <i class="fas fa-calendar-check w-5 text-center mr-3"></i>打卡
+                    </a>
+                </div>
+                <div class="px-3 border-t pt-3">
+                    <button id="logout-btn" class="flex items-center px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-100 w-full">
+                        <i class="fas fa-sign-out-alt w-5 text-center mr-3"></i>退出登录
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="lg:ml-56 pt-14 lg:pt-0 min-h-screen">
+            <div id="page-content" class="p-4 lg:p-8 max-w-6xl mx-auto"></div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/components/group-toggle.js"></script>
+    <script src="js/components/multi-select-filter.js"></script>
+    <script src="js/components/todo-card.js"></script>
+    <script src="js/pages/login.js"></script>
+    <script src="js/pages/requirements.js"></script>
+    <script src="js/pages/todos.js"></script>
+    <script src="js/pages/transactions.js"></script>
+    <script src="js/pages/checkins.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

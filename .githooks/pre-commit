@@ -1,0 +1,15 @@
+#!/bin/bash
+# 禁止直接在 master 分支提交（merge commit 除外）
+
+branch="$(git symbolic-ref --short HEAD 2>/dev/null)"
+
+if [ "$branch" = "master" ] || [ "$branch" = "main" ]; then
+    # 允许 merge commit（git merge 时 MERGE_HEAD 存在）
+    if [ -f "$(git rev-parse --git-dir)/MERGE_HEAD" ]; then
+        exit 0
+    fi
+    echo "ERROR: 禁止直接在 $branch 分支提交。请使用 feature/bugfix 分支开发后 merge。"
+    exit 1
+fi
+
+exit 0

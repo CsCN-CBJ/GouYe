@@ -1,0 +1,204 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 标签 */
+.tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.tag-income {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.tag-expense {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.tag-neutral {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* 底部导航 */
+.tab-bar {
+    height: 83px;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 20px;
+    background: #fff;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    z-index: 100;
+}
+
+.ai-btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+    margin-top: -35px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border: 4px solid #fff;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.ai-btn:active {
+    transform: scale(0.92);
+}
+
+.tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.tab-item.active i {
+    color: #000;
+}
+
+.tab-item i {
+    color: #cbd5e1;
+    font-size: 20px;
+}
+
+/* 内容区 */
+.content-area {
+    flex: 1;
+    padding-bottom: 100px;
+}
+
+/* 流水项 */
+.transaction-item {
+    transition: background 0.15s;
+    cursor: pointer;
+    border-radius: 16px;
+    padding: 12px;
+    margin: 0 -12px;
+}
+
+.transaction-item:active {
+    background: #f8fafc;
+}
+
+/* 月份选择器 */
+.month-selector {
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.month-selector:active {
+    opacity: 0.6;
+}
+
+/* 骨架屏 */
+.skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 空状态 */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+/* Toast 提示 */
+.toast {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #1e293b;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 用户面板输入框 */
+#authUsername:focus,
+#authPassword:focus,
+#newPassword:focus,
+#confirmPassword:focus {
+    background: #f8fafc;
+}
+
+/* ========== 统一 Modal ========== */
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(100% - 32px);
+    max-width: 440px;
+    max-height: 85vh;
+    background: #fff;
+    border-radius: 1.5rem;
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0;
+    transition: all 0.3s;
+    overflow-y: auto;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+}

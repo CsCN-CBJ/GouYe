@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>打卡 - 狗爷收支</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="checkin.css">
+</head>
+
+<body>
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 主内容 -->
+    <div class="content-area">
+        <div class="px-6 pt-10">
+            <!-- 标题栏 -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="font-bold text-xl">打卡</h1>
+                <div class="flex items-center gap-3">
+                    <button class="px-3 py-1.5 bg-black text-white text-xs font-semibold rounded-lg active:scale-[0.96] transition-transform" onclick="openCheckinModal()">
+                        <i class="fas fa-plus mr-1"></i>新建
+                    </button>
+                    <button class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400" onclick="location.href='/'">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <button id="toggleFilterBtn" class="text-gray-400 text-sm">
+                        <i class="fas fa-filter mr-1"></i>筛选
+                    </button>
+                </div>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div id="filterBar" class="filter-bar hidden mb-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="filterCategory" class="filter-select">
+                        <option value="">全部分类</option>
+                        <option value="sport">运动</option>
+                        <option value="reading">阅读</option>
+                        <option value="health">健康</option>
+                        <option value="work">工作</option>
+                        <option value="learning">学习</option>
+                        <option value="life">生活</option>
+                        <option value="other">其他</option>
+                    </select>
+                    <select id="filterTag" class="filter-select">
+                        <option value="">全部标签</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 打卡列表 -->
+            <div id="checkinList" class="space-y-3 pb-4">
+                <div id="skeleton" class="space-y-4">
+                    <div class="skeleton w-full h-16 rounded-xl"></div>
+                    <div class="skeleton w-full h-16 rounded-xl"></div>
+                    <div class="skeleton w-full h-16 rounded-xl"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="tab-bar">
+        <div class="tab-item" onclick="location.href='/'">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="ai-btn" onclick="openAIModal()">
+            <i class="fas fa-plus"></i>
+        </div>
+        <div class="tab-item" onclick="location.href='/pages/todo.html'">
+            <i class="fas fa-check-square"></i>
+        </div>
+        <div class="tab-item active">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+    </div>
+
+    <!-- 打卡创建/编辑弹窗 -->
+    <div id="checkinModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay" id="checkinModalOverlay"></div>
+        <div class="modal-content" id="checkinModalContent">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg" id="checkinModalTitle">新建打卡</h3>
+                    <button class="text-gray-400 text-xl" onclick="closeCheckinModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">标题</label>
+                        <input type="text" id="checkinTitle" placeholder="做了什么？"
+                            class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 transition">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">分类</label>
+                            <select id="checkinCategory" class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 transition">
+                                <option value="sport">运动</option>
+                                <option value="reading">阅读</option>
+                                <option value="health">健康</option>
+                                <option value="work">工作</option>
+                                <option value="learning">学习</option>
+                                <option value="life">生活</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">时间</label>
+                            <input type="datetime-local" id="checkinOccurredAt"
+                                class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">标签（多选）</label>
+                        <div id="checkinTagSelector" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">详情 (JSON)</label>
+                        <textarea id="checkinPayload" rows="3" placeholder='{"distance": 5, "unit": "km"}'
+                            class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 transition font-mono"></textarea>
+                    </div>
+                    <button id="saveCheckinBtn"
+                        class="w-full py-3 bg-black text-white rounded-xl font-bold text-sm active:scale-[0.98] transition-transform disabled:opacity-50">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 输入弹窗 -->
+    <div id="aiModal" class="fixed inset-0 z-[110] hidden">
+        <div class="modal-overlay" onclick="closeAIModal()"></div>
+        <div class="modal-content" id="aiModalContent">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg">AI 录入</h3>
+                    <button class="text-gray-400 text-xl" onclick="closeAIModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <ai-input id="aiInput"></ai-input>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proposal 卡片 -->
+    <proposal-card id="proposalCard"></proposal-card>
+
+    <!-- JS -->
+    <script src="../js/utils.js"></script>
+    <script src="../components/ai-input.js"></script>
+    <script src="../components/proposal-card.js"></script>
+    <script src="checkin.js"></script>
+</body>
+
+</html>

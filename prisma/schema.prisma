@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+// 注: SQLite 连接器不支持 enum / Json / @db.* 原生类型，
+// 原 enum 与 Json 字段一律以 String 存储（Json 在代码层序列化）。
+
+model User {
+  userId       Int   @id @default(autoincrement()) @map("user_id")
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  avatarUrl    String?  @map("avatar_url")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  categories       Category[]
+  transactions     Transaction[]
+  tags             Tag[]
+  todos            Todo[]
+  checkins         Checkin[]
+  checkinTemplates CheckinTemplate[]
+  projects         Project[]
+
+  @@map("users")
+}
+
+model Category {
+  categoryId   Int   @id @default(autoincrement()) @map("category_id")
+  userId       Int   @map("user_id")
+  categoryName String   @map("category_name")
+  categoryType String   @map("category_type")
+  icon         String?
+  color        String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user         User          @relation(fields: [userId], references: [userId])
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+model Transaction {
+  transactionId   Int          @id @default(autoincrement()) @map("transaction_id")
+  userId          Int          @map("user_id")
+  categoryId      Int          @map("category_id")
+  amount          Decimal
+  transactionType String          @map("transaction_type")
+  transactionDate DateTime        @map("transaction_date")
+  description     String?
+  images          String?
+  createdAt       DateTime        @map("created_at")
+  updatedAt       DateTime        @map("updated_at")
+
+  user            User             @relation(fields: [userId], references: [userId])
+  category        Category         @relation(fields: [categoryId], references: [categoryId])
+  transactionTags TransactionTag[]
+
+  @@map("transactions")
+}
+
+model Tag {
+  tagId     Int   @id @default(autoincrement()) @map("tag_id")
+  userId    Int   @map("user_id")
+  tagName   String   @map("tag_name")
+  color     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user            User             @relation(fields: [userId], references: [userId])
+  transactionTags TransactionTag[]
+  todoTags        TodoTag[]
+  checkinTags     CheckinTag[]
+
+  @@unique([userId, tagName])
+  @@map("tags")
+}
+
+model TransactionTag {
+  transactionId Int @map("transaction_id")
+  tagId         Int @map("tag_id")
+
+  transaction Transaction @relation(fields: [transactionId], references: [transactionId], onDelete: Cascade)
+  tag         Tag         @relation(fields: [tagId], references: [tagId], onDelete: Cascade)
+
+  @@id([transactionId, tagId])
+  @@map("transaction_tags")
+}
+
+model Project {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @map("user_id")
+  domain    String
+  name      String
+  status    String        @default("active")
+  color     String?
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  user  User   @relation(fields: [userId], references: [userId])
+  todos Todo[]
+
+  @@unique([userId, domain, name])
+  @@map("projects")
+}
+
+model Todo {
+  id          Int     @id @default(autoincrement())
+  userId      Int     @map("user_id")
+  domain      String
+  projectId   Int?    @map("project_id")
+  title       String
+  status      String     @default("not_started")
+  dueAt       DateTime?  @map("due_at")
+  completedAt DateTime?  @map("completed_at")
+  comment     String?
+  createdAt   DateTime   @map("created_at")
+  updatedAt   DateTime   @map("updated_at")
+
+  user         User          @relation(fields: [userId], references: [userId])
+  project      Project?      @relation(fields: [projectId], references: [id])
+  todoVersions TodoVersion[]
+  todoTags     TodoTag[]
+
+  @@map("todos")
+}
+
+model TodoVersion {
+  id            Int     @id @default(autoincrement())
+  todoId        Int     @map("todo_id")
+  versionNumber Int        @map("version_number")
+  title         String
+  status        String
+  domain        String
+  projectId     Int?    @map("project_id")
+  dueAt         DateTime?  @map("due_at")
+  completedAt   DateTime?  @map("completed_at")
+  comment       String?
+  tagIds        String?    @map("tag_ids")
+  createdAt     DateTime   @map("created_at")
+
+  todo Todo @relation(fields: [todoId], references: [id], onDelete: Cascade)
+
+  @@unique([todoId, versionNumber])
+  @@map("todo_versions")
+}
+
+model TodoTag {
+  todoId Int @map("todo_id")
+  tagId  Int @map("tag_id")
+
+  todo Todo @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [tagId], onDelete: Cascade)
+
+  @@id([todoId, tagId])
+  @@map("todo_tags")
+}
+
+model CheckinTemplate {
+  id           Int   @id @default(autoincrement())
+  userId       Int   @map("user_id")
+  name         String
+  icon         String?
+  fieldsSchema String   @map("fields_schema")
+  createdAt    DateTime @map("created_at")
+  updatedAt    DateTime @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [userId])
+  checkins Checkin[]
+
+  @@unique([userId, name])
+  @@map("checkin_templates")
+}
+
+model Checkin {
+  id         Int   @id @default(autoincrement())
+  userId     Int   @map("user_id")
+  templateId Int   @map("template_id")
+  occurredAt DateTime @map("occurred_at")
+  payload    String?
+  createdAt  DateTime @map("created_at")
+  updatedAt  DateTime @map("updated_at")
+
+  user        User            @relation(fields: [userId], references: [userId])
+  template    CheckinTemplate @relation(fields: [templateId], references: [id])
+  checkinTags CheckinTag[]
+
+  @@map("checkins")
+}
+
+model CheckinTag {
+  checkinId Int @map("checkin_id")
+  tagId     Int @map("tag_id")
+
+  checkin Checkin @relation(fields: [checkinId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [tagId], onDelete: Cascade)
+
+  @@id([checkinId, tagId])
+  @@map("checkin_tags")
+}

@@ -1,0 +1,5 @@
+# 每分钟 git pull
+* * * * * /app/backend-node/scripts/watch-pull.sh >> /app/log/deploy.log 2>&1
+
+# 每天凌晨4点重启（兜底，防止内存泄漏）
+0 4 * * * pm2 restart backend-node >> /app/log/restart.log 2>&1

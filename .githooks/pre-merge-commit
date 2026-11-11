@@ -1,0 +1,15 @@
+#!/bin/bash
+# 合并到 master 时必须修改 CHANGELOG.md
+
+branch="$(git symbolic-ref --short HEAD 2>/dev/null)"
+
+if [ "$branch" = "master" ] || [ "$branch" = "main" ]; then
+    # 检查暂存区（merge 结果）是否包含 CHANGELOG.md 的改动
+    if ! git diff --cached --name-only HEAD | grep -q "^CHANGELOG.md$"; then
+        echo "ERROR: 合并到 $branch 必须包含 CHANGELOG.md 的修改。"
+        echo "       请在 feature 分支更新 CHANGELOG 后再合并。"
+        exit 1
+    fi
+fi
+
+exit 0

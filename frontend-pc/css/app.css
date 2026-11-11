@@ -1,0 +1,356 @@
+/* Custom styles beyond Tailwind */
+
+/* Active nav link */
+.nav-link.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+/* Status badges */
+.badge-not-started { background: #fef3c7; color: #92400e; }
+.badge-in-progress { background: #dbeafe; color: #1e40af; }
+.badge-blocked { background: #fee2e2; color: #991b1b; }
+.badge-completed { background: #d1fae5; color: #065f46; }
+.badge-cancelled { background: #f3f4f6; color: #6b7280; }
+
+/* Tag pills */
+.tag-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Filter section */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.filter-bar select,
+.filter-bar input {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background: white;
+}
+
+.filter-bar select:focus,
+.filter-bar input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.1);
+}
+
+/* Group header for project/template grouping */
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0;
+    margin-top: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+.group-header:first-child {
+    margin-top: 0;
+}
+.group-header .color-bar {
+    width: 4px;
+    height: 20px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+.group-header .group-name {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: #111827;
+}
+.group-header .group-count {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    font-weight: 400;
+}
+.group-header.uncategorized {
+    border-bottom-style: dashed;
+}
+.group-header.uncategorized .group-name {
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+/* Completed item dimming */
+.item-completed {
+    opacity: 0.5;
+}
+.item-completed .item-title {
+    text-decoration: line-through;
+}
+
+/* Group collapse hint */
+.group-more {
+    text-align: center;
+    padding: 0.375rem 0;
+    font-size: 0.8125rem;
+    color: #6b7280;
+    cursor: pointer;
+}
+.group-more:hover {
+    color: #3b82f6;
+}
+
+/* Compact payload display (inline) */
+.payload-compact {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    line-height: 1.5;
+}
+.payload-compact .payload-field {
+    display: inline;
+}
+.payload-compact .payload-field + .payload-field::before {
+    content: " · ";
+}
+
+/* Card hover */
+.card {
+    transition: box-shadow 0.15s;
+}
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Loading spinner */
+.spinner {
+    border: 3px solid #f3f4f6;
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* === Group Toggle Segmented Control === */
+.group-toggle-segmented {
+    display: inline-flex;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: #f9fafb;
+}
+.group-toggle-btn {
+    padding: 0.375rem 1rem;
+    font-size: 0.875rem;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.group-toggle-btn:not(:last-child) {
+    border-right: 1px solid #d1d5db;
+}
+.group-toggle-btn.active {
+    background: #3b82f6;
+    color: white;
+}
+.group-toggle-btn:hover:not(.active) {
+    background: #e5e7eb;
+}
+
+/* === Multi-Select Status Chips === */
+.multi-select-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+.status-chip {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8125rem;
+    border: 1px solid #d1d5db;
+    border-radius: 9999px;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.status-chip:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+.status-chip.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* === Todo Grid (dual-column) === */
+.todo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+    .todo-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+@media (max-width: 767px) {
+    .todo-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === Todo Card === */
+.todo-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    transition: box-shadow 0.15s;
+}
+.todo-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.todo-card.item-completed {
+    opacity: 0.5;
+}
+.todo-card.item-completed .todo-card-title {
+    text-decoration: line-through;
+}
+
+.todo-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.todo-card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.todo-card-status {
+    font-size: 0.8125rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+}
+.todo-card-project {
+    font-size: 0.75rem;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+}
+.todo-card-dates {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+.todo-card-title {
+    font-weight: 500;
+    color: #111827;
+    font-size: 0.9375rem;
+    margin-bottom: 0.375rem;
+}
+.todo-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-bottom: 0.375rem;
+}
+.todo-card-meta {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-bottom: 0.375rem;
+}
+.todo-card-meta-item {
+    margin-right: 0.5rem;
+}
+.todo-card-divider {
+    border-top: 1px solid #f3f4f6;
+    margin: 0.5rem 0;
+}
+
+/* === Version History === */
+.todo-card-history {
+    font-size: 0.8125rem;
+}
+.version-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+    color: #6b7280;
+}
+.version-num {
+    font-weight: 600;
+    color: #9ca3af;
+    font-size: 0.75rem;
+    min-width: 1.5rem;
+}
+.version-summary {
+    flex: 1;
+}
+.version-date {
+    color: #d1d5db;
+    font-size: 0.6875rem;
+    white-space: nowrap;
+}
+.version-empty {
+    color: #d1d5db;
+    padding: 0.25rem 0;
+}
+.version-loading {
+    color: #d1d5db;
+    padding: 0.25rem 0;
+}
+.version-error {
+    color: #ef4444;
+    font-size: 0.8125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.version-retry {
+    color: #3b82f6;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    padding: 0;
+    text-decoration: underline;
+}
+.version-expand {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 0;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #3b82f6;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
+.version-expand:hover {
+    color: #2563eb;
+}
+
+/* === Status Group Header === */
+.status-group-header {
+    border-bottom-style: solid;
+}
+.status-group-header .group-name {
+    text-transform: none;
+}

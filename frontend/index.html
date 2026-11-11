@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>狗爷收支</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 主内容 -->
+    <div class="content-area">
+        <div class="px-6 pt-10">
+            <!-- 月份 & 概览 -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center">
+                    <div class="month-selector flex items-center" id="monthSelector">
+                    <p class="text-gray-400 text-sm font-medium" id="monthLabel">--</p>
+                    <i class="fas fa-chevron-down text-gray-300 text-xs ml-2"></i>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-1.5 bg-black text-white text-xs font-semibold rounded-lg active:scale-[0.96] transition-transform" onclick="openAIModal()">
+                            <i class="fas fa-plus mr-1"></i>记一笔
+                        </button>
+                        <button class="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400" onclick="openUserModal()">
+                            <i class="fas fa-user"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mt-4 bg-gray-50 rounded-3xl p-5">
+                    <div class="text-center flex-1 border-r border-gray-200">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">月收入</p>
+                        <p class="text-xl font-bold text-emerald-500" id="monthIncome">--</p>
+                    </div>
+                    <div class="text-center flex-1">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">月支出</p>
+                        <p class="text-xl font-bold text-gray-900" id="monthExpense">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最近流水 -->
+            <h2 class="font-bold text-lg mb-4 flex justify-between items-center">
+                最近流水
+                <a href="#" class="text-xs font-normal text-indigo-500" id="viewReport">
+                    查看报表 <i class="fas fa-chevron-right text-[10px]"></i>
+                </a>
+            </h2>
+
+            <!-- 流水列表 -->
+            <div id="transactionList" class="space-y-2 pb-4">
+                <div id="skeleton" class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="skeleton w-11 h-11 rounded-full mr-4"></div>
+                            <div>
+                                <div class="skeleton w-24 h-4 mb-2"></div>
+                                <div class="skeleton w-32 h-3"></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="skeleton w-20 h-5 mb-1 ml-auto"></div>
+                            <div class="skeleton w-10 h-3 ml-auto"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="skeleton w-11 h-11 rounded-full mr-4"></div>
+                            <div>
+                                <div class="skeleton w-20 h-4 mb-2"></div>
+                                <div class="skeleton w-28 h-3"></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="skeleton w-16 h-5 mb-1 ml-auto"></div>
+                            <div class="skeleton w-10 h-3 ml-auto"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="skeleton w-11 h-11 rounded-full mr-4"></div>
+                            <div>
+                                <div class="skeleton w-16 h-4 mb-2"></div>
+                                <div class="skeleton w-24 h-3"></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="skeleton w-14 h-5 mb-1 ml-auto"></div>
+                            <div class="skeleton w-10 h-3 ml-auto"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="tab-bar">
+        <div class="tab-item active">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="ai-btn" id="addBtn" onclick="openAIModal()">
+            <i class="fas fa-plus"></i>
+        </div>
+        <div class="tab-item" onclick="location.href='/pages/todo.html'">
+            <i class="fas fa-check-square"></i>
+        </div>
+        <div class="tab-item" onclick="location.href='/pages/checkin.html'">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+    </div>
+
+    <!-- 用户面板弹窗 -->
+    <div id="userModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay" id="userModalOverlay"></div>
+        <div class="modal-content" id="userModalContent">
+            <!-- 未登录: 登录/注册表单 -->
+            <div id="authPanel" class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg" id="authTitle">登录</h3>
+                    <button class="text-gray-400 text-xl" id="closeUserModal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <input type="text" id="authUsername" placeholder="用户名"
+                            class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 transition">
+                    </div>
+                    <div>
+                        <input type="password" id="authPassword" placeholder="密码"
+                            class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 transition">
+                    </div>
+                    <button id="authSubmitBtn"
+                        class="w-full py-3 bg-black text-white rounded-xl font-bold text-sm active:scale-[0.98] transition-transform disabled:opacity-50">
+                        登录
+                    </button>
+                </div>
+                <p class="text-center text-xs text-gray-400 mt-4">
+                    <span id="authSwitch">还没有账号？<span class="text-indigo-500 font-medium cursor-pointer" id="authSwitchLink">去注册</span></span>
+                </p>
+            </div>
+            <!-- 已登录: 个人信息 -->
+            <div id="profilePanel" class="p-6 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg">我的</h3>
+                    <button class="text-gray-400 text-xl" id="closeUserModal2"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center text-2xl mr-4" id="profileAvatar">
+                        <i class="fas fa-user text-gray-300"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-base" id="profileName">--</p>
+                        <p class="text-xs text-gray-400 mt-0.5">欢迎回来</p>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer active:bg-gray-100 transition" id="changePwdBtn">
+                        <div class="flex items-center">
+                            <i class="fas fa-lock text-gray-400 mr-3 text-sm"></i>
+                            <span class="text-sm font-medium">修改密码</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer active:bg-gray-100 transition" id="logoutBtn">
+                        <div class="flex items-center">
+                            <i class="fas fa-sign-out-alt text-red-400 mr-3 text-sm"></i>
+                            <span class="text-sm font-medium text-red-500">退出登录</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- 修改密码面板 -->
+            <div id="changePwdPanel" class="p-6 hidden">
+                <div class="flex items-center mb-6">
+                    <button class="text-gray-400 mr-3" id="backToProfile"><i class="fas fa-arrow-left"></i></button>
+                    <h3 class="font-bold text-lg">修改密码</h3>
+                </div>
+                <div class="space-y-4">
+                    <input type="password" id="newPassword" placeholder="新密码"
+                        class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 transition">
+                    <input type="password" id="confirmPassword" placeholder="确认新密码"
+                        class="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black/10 transition">
+                    <button id="savePwdBtn"
+                        class="w-full py-3 bg-black text-white rounded-xl font-bold text-sm active:scale-[0.98] transition-transform disabled:opacity-50">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 输入弹窗 -->
+    <div id="aiModal" class="fixed inset-0 z-[110] hidden">
+        <div class="modal-overlay" onclick="closeAIModal()"></div>
+        <div class="modal-content" id="aiModalContent">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg">AI 录入</h3>
+                    <button class="text-gray-400 text-xl" onclick="closeAIModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <ai-input id="aiInput"></ai-input>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proposal 卡片 -->
+    <proposal-card id="proposalCard"></proposal-card>
+
+    <!-- 月份选择弹窗 -->
+    <div id="monthModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay" id="monthModalOverlay"></div>
+        <div class="modal-content p-6" id="monthModalContent">
+            <h3 class="font-bold text-lg mb-4 text-center">选择月份</h3>
+            <div class="grid grid-cols-3 gap-3" id="monthGrid"></div>
+            <div class="flex items-center justify-between mt-4">
+                <button class="text-gray-400 text-sm" id="prevYear"><i class="fas fa-chevron-left mr-1"></i>上一年</button>
+                <span class="font-bold" id="yearLabel"></span>
+                <button class="text-gray-400 text-sm" id="nextYear">下一年<i class="fas fa-chevron-right ml-1"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="js/utils.js"></script>
+    <script src="components/ai-input.js"></script>
+    <script src="components/proposal-card.js"></script>
+    <script src="js/index.js"></script>
+</body>
+
+</html>
