@@ -1,96 +1,77 @@
-# GouYe (狗爷) All-in-One APP
+# GouYe（狗爷）All-in-One
 
-个人生活管理应用，集成记账、需求管理、TODO List 和打卡记录功能。
+个人生活管理应用：**记账、待办需求、打卡记录**，一个网页全搞定。
 
-## 技术栈
+## 能做什么
 
-- **后端**: Express + TypeScript + Prisma + SQLite
-- **前端**: 原生 HTML/CSS/JS（PC 端 + 移动端两套界面）
-- **认证**: JWT（jsonwebtoken + bcryptjs）
-- **测试**: Vitest + Supertest
-- **部署**: PM2 + cron 自动部署
+### 💰 记账
+
+- 收入 / 支出分开记录，金额精确到分
+- 分类体系：收入、支出各自维护一套分类
+- 多标签：一笔账可以打多个标签，便于横向归类
+- 多维筛选：类型、分类、标签、日期区间、关键词
+- 汇总统计：按时间段汇总收支
+
+### ✅ 待办 & 需求
+
+- 两个域：`work`（工作需求）、`life`（日常待办）
+- 按项目分组展示，项目可设颜色，一眼区分
+- 状态流转：未开始 → 进行中 → 阻塞 → 已完成 / 已取消（可互相转换）
+- **版本快照**：每次修改自动留档，可查看历史版本与差异
+- 支持标签、归档、关键词搜索
+
+### 🏃 打卡
+
+- **模板驱动**：先定义模板（字段 + 类型），打卡时按模板填
+- 支持 6 种字段类型：数字、单选、文本、布尔、日期、数组（可嵌套）
+- 提交时严格校验字段类型与取值范围，脏数据进不来
+- 适合跑步、健身、作息等需要长期追踪的记录
+
+### 🖥 双端界面
+
+- **PC 端**：单页应用，侧边栏 + 卡片式列表，适合整理和回顾
+- **移动端**：单页版，手机浏览器直接打开就能记
 
 ## 快速开始
 
-1. 安装依赖：
-   ```bash
-   npm ci
-   ```
-
-2. 配置环境变量（参考 `.env.example`）：
-   ```bash
-   cp .env.example .env
-   # 编辑 .env 填写 DATABASE_URL、JWT_SECRET_KEY、PORT
-   ```
-
-3. 生成 Prisma Client：
-   ```bash
-   npx prisma generate
-   ```
-
-4. 启动开发服务器：
-   ```bash
-   npm run dev
-   ```
-
-应用将在 `http://localhost:7001` 运行。
-
-## 项目结构
-
-```
-.
-├── src/                  # 后端源码 (TypeScript)
-│   ├── app.ts            # Express 应用入口
-│   ├── prisma.ts         # Prisma Client 单例
-│   ├── types.ts          # 全局类型扩展
-│   ├── utils.ts          # 响应工具函数
-│   ├── middleware/        # 中间件
-│   │   └── auth.ts       # JWT 认证中间件
-│   ├── routes/           # API 路由
-│   │   ├── user.ts       # 用户注册/登录
-│   │   ├── transaction.ts # 收支记录 CRUD
-│   │   ├── category.ts   # 分类管理
-│   │   ├── tag.ts        # 标签管理
-│   │   ├── project.ts    # 项目管理
-│   │   ├── todo.ts       # TODO CRUD + 状态流转 + 版本管理
-│   │   ├── checkin-template.ts # 打卡模板
-│   │   └── checkin.ts    # 打卡记录
-│   └── services/         # 业务逻辑
-│       ├── template-validator.ts # 打卡 payload 校验
-│       └── todo-versioning.ts    # TODO 版本快照
-├── frontend-pc/          # PC 前端 (SPA)
-│   ├── index.html
-│   ├── css/app.css
-│   └── js/
-│       ├── api.js        # API 请求封装
-│       ├── router.js     # 路由管理
-│       ├── app.js        # 应用入口
-│       └── pages/        # 页面模块
-├── frontend/             # 移动端前端 (Legacy)
-├── prisma/               # 数据库
-│   └── schema.prisma     # Prisma Schema
-├── sql/                  # 历史 MySQL 建表脚本（不再使用）
-├── tests/                # 集成测试 (Vitest)
-│   ├── setup.ts          # 数据库清理
-│   ├── helpers.ts        # 测试辅助函数
-│   └── *.test.ts         # 各模块测试
-├── scripts/              # 部署脚本
-│   ├── run.sh            # 启动脚本
-│   ├── watch-pull.sh     # cron 自动部署
-│   └── crontab.example   # cron 配置示例
-└── docs/                 # 项目文档
+```bash
+npm ci                      # 安装依赖
+cp .env.example .env        # 配置环境变量
+# 编辑 .env：填 JWT_SECRET_KEY，按需改 PORT / DATABASE_URL
+npx prisma generate         # 生成 Prisma Client
+npm run dev                 # 启动（默认 http://localhost:7001）
 ```
 
-## 功能模块
+数据库默认用 SQLite 单文件（`file:./dev.db`），**不需要额外装数据库服务**。
 
-1. **记账** — 收支记录、分类管理、标签系统，按日期/分类/标签筛选
-2. **需求管理** — Work 域 TODO，按项目分组视图
-3. **TODO List** — Life 域 TODO，状态流转（pending/done/cancelled）+ 版本快照
-4. **打卡** — 基于模板的结构化打卡（跑步、健身等），schema 校验
+## 技术栈
 
-## 文档索引
+| 层 | 选型 |
+|---|---|
+| 后端 | Express + TypeScript |
+| 数据 | Prisma + SQLite |
+| 认证 | JWT（jsonwebtoken + bcryptjs） |
+| 前端 | 原生 HTML / CSS / JS（无构建步骤） |
+| 测试 | Vitest + Supertest |
+| 部署 | PM2 + cron 自动部署 |
 
-- [架构概览](docs/architecture/overview.md)
+## 目录结构
+
+| 目录 | 放什么 |
+|---|---|
+| `src/` | 后端源码（路由、中间件、业务逻辑） |
+| `frontend/` | 移动端页面 |
+| `frontend-pc/` | PC 端单页应用 |
+| `prisma/` | 数据模型定义（schema） |
+| `tests/` | 集成测试 |
+| `docs/` | 设计与接口文档 |
+| `scripts/` | 部署脚本 |
+| `sql/` | 早期 MySQL 建表脚本（已停用，仅存档） |
+
+## 文档
+
 - [API 文档](docs/api.md)
+- [架构概览](docs/architecture/overview.md)
 - [部署指南](docs/deployment.md)
 - [配置说明](docs/config.md)
+- [版本更新日志](CHANGELOG.md)
