@@ -122,6 +122,39 @@
 
 ---
 
+## 手机使用记录
+
+手机使用记录通过 HTTPS 提交。服务端使用登录令牌识别账号，每台设备按北京时间分日。
+
+| 方法与路径 | 用途 |
+| --- | --- |
+| `PUT /api/app-usage/devices/:deviceId/days/:date` | 上传当天完整的已保存片段 |
+| `GET /api/app-usage/days?from=YYYY-MM-DD&to=YYYY-MM-DD` | 查询指定日期范围。可附加 `device_id` 筛选 |
+| `GET /api/app-usage/devices/:deviceId/days/:date` | 查询当天时长、应用排行和时间段 |
+
+提交正文包含版本号和时间段数组。
+
+```json
+{
+  "revision": 1,
+  "sessions": [
+    {
+      "package_name": "com.example.reader",
+      "app_name": "阅读",
+      "started_at": "2026-11-22T22:21:00.123+08:00",
+      "ended_at": "2026-11-22T22:23:05.456+08:00"
+    }
+  ]
+}
+```
+
+片段按开始时间排列，跨午夜时拆到各自日期。日期范围的上边界是北京时间次日零点，最后一段可恰好在零点结束。
+返回的 `duration_ms` 是实际使用毫秒数，日期时间字段带 `+08:00`。
+
+写入状态有 `applied`、`duplicate` 和 `stale`，并返回服务器已保存的 `revision`。同一版本对应不同内容时返回 409。
+
+---
+
 ## 分类模块
 
 所有接口需认证。

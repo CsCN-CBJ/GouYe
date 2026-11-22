@@ -13,11 +13,21 @@ import { todoRouter } from './routes/todo.js';
 import { transactionRouter } from './routes/transaction.js';
 import { checkinRouter } from './routes/checkin.js';
 import { checkinTemplateRouter } from './routes/checkin-template.js';
+import { appUsageRouter } from './routes/app-usage.js';
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(cors());
+app.use('/api/app-usage', (req: Request, res: Response, next: NextFunction) => {
+  const peer = req.socket.remoteAddress;
+  const localProxy = peer === '127.0.0.1' || peer === '::1' || peer === '::ffff:127.0.0.1';
+  if (process.env.NODE_ENV === 'test' || req.secure || (localProxy && req.get('X-Forwarded-Proto') === 'https')) {
+    next();
+    return;
+  }
+  res.status(426).json({ code: 1, message: '手机使用记录需要 HTTPS' });
+}, authMiddleware, express.json({ limit: '8mb' }), appUsageRouter);
 app.use(express.json());
 
 // API routes
@@ -52,7 +62,7 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 export { app };
 
 if (process.env.NODE_ENV !== 'test') {
-  const PORT = process.env.PORT || 7001;
+  const PORT = Number(process.env.PORT || 7001);
   const HOST = process.env.HOST || '0.0.0.0';
   app.listen(PORT, HOST, () => {
     console.log(`Server running on ${HOST}:${PORT}`);

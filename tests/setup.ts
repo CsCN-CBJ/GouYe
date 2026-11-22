@@ -11,6 +11,8 @@ export async function teardown() {
 async function truncateAll() {
   // Order matters due to FK constraints — delete children first
   await prisma.$executeRawUnsafe('PRAGMA foreign_keys = OFF');
+  await prisma.$executeRawUnsafe('DELETE FROM app_usage_sessions');
+  await prisma.$executeRawUnsafe('DELETE FROM app_usage_days');
   await prisma.$executeRawUnsafe('DELETE FROM checkin_tags');
   await prisma.$executeRawUnsafe('DELETE FROM checkins');
   await prisma.$executeRawUnsafe('DELETE FROM checkin_templates');

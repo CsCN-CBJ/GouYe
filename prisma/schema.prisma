@@ -25,6 +25,7 @@ model User {
   checkins         Checkin[]
   checkinTemplates CheckinTemplate[]
   projects         Project[]
+  appUsageDays     AppUsageDay[]
 
   @@map("users")
 }
@@ -200,4 +201,36 @@ model CheckinTag {
 
   @@id([checkinId, tagId])
   @@map("checkin_tags")
+}
+
+model AppUsageDay {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  deviceId   String   @map("device_id")
+  date       String
+  revision   Int
+  digest     String
+  durationMs Int      @map("duration_ms")
+  syncedAt   DateTime @map("synced_at")
+
+  user     User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  sessions AppUsageSession[]
+
+  @@unique([userId, deviceId, date])
+  @@index([userId, date])
+  @@map("app_usage_days")
+}
+
+model AppUsageSession {
+  id          Int      @id @default(autoincrement())
+  dayId       Int      @map("day_id")
+  packageName String   @map("package_name")
+  appName     String   @map("app_name")
+  startedAt   DateTime @map("started_at")
+  endedAt     DateTime @map("ended_at")
+
+  day AppUsageDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+
+  @@index([dayId, startedAt])
+  @@map("app_usage_sessions")
 }

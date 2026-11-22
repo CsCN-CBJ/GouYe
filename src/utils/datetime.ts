@@ -37,3 +37,8 @@ export function parseLocalDateRange(start: unknown, end: unknown): { gte?: Date;
   }
   return out;
 }
+
+export function formatBeijingDateTime(date: Date): string {
+  const shifted = new Date(date.getTime() + 8 * 60 * 60 * 1000);
+  return shifted.toISOString().replace(/Z$/, '+08:00');
+}
