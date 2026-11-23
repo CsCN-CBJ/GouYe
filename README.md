@@ -62,6 +62,7 @@ npm run dev                 # 启动（默认 http://localhost:7001）
 | `src/` | 后端源码（路由、中间件、业务逻辑） |
 | `frontend/` | 移动端页面 |
 | `frontend-pc/` | PC 端单页应用 |
+| `android/` | [安卓应用](android/README.md)，记录应用使用时长并同步到 GouYe |
 | `prisma/` | 数据模型定义（schema） |
 | `tests/` | 集成测试 |
 | `docs/` | 设计与接口文档 |

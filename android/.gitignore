@@ -1,0 +1,8 @@
+/.signing
+/构建产物/
+/assets/release-base.txt
+/assets/sync-server.txt
+*.apk
+*.p12
+*.jks
+*.keystore
